@@ -47,7 +47,7 @@ class PipelinePath(str, Enum):
 class ExtractorTier(str, Enum):
     """Model cascade tier for fact extraction."""
 
-    FAST = "fast"  # Llama-3.1-8B
+    FAST = "fast"  # Llama-3.3-70B
     DENSE = "dense"  # Llama-3.3-70B
 
 

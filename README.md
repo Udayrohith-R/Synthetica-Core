@@ -11,7 +11,7 @@ Agent Swarm
 [1] SSM + BM25 retrieval          → filtered snippets
     │
     ▼
-[2] Llama-3.1-8B fact extractor   → AtomicClaim JSON
+[2] Llama-3.3-70B fact extractor   → AtomicClaim JSON
     │
     ▼
 [3] Neo4j 4D property graph       → CORROBORATES / CONTRADICTS
@@ -23,7 +23,7 @@ Agent Swarm
 ```
 
 1. **Agent state-space retrieval** — AST / stack / state tensors + BM25 lexical index + Matryoshka projection; Exa for remote hits.
-2. **Zero-latency fact extractor** — Llama-3.1-8B (cascade to 70B) via httpx; concurrent `asyncio.gather` over snippets; JSON repair for malformed LLM output.
+2. **Zero-latency fact extractor** — Llama-3.3-70B as the primary extractor via httpx; concurrent `asyncio.gather` over snippets; JSON repair for malformed LLM output.
 3. **4D property graph** — `Document` / `Claim` / `Entity` / `Source` with `MENTIONS_ENTITY`, `CORROBORATES`, `CONTRADICTS`.
 4. **CAMMR + entropy** — consensus-aware MMR; low `H(R_q)` → fast path; high → arbitration.
 5. **Deep arbitration** — larger-model pass to resolve factual conflicts into grounded synthesis.
@@ -60,27 +60,31 @@ python demo.py --query "NVIDIA Q2 FY2025 data center revenue"
 
 ## Configuration
 
-Copy [`.env.example`](.env.example) → `.env`:
+Copy `[.env.example](.env.example)` → `.env`:
 
-| Variable | Purpose |
-|----------|---------|
-| `EXA_API_KEY` | Neural web search |
-| `NEO4J_URI` / `NEO4J_USER` / `NEO4J_PASSWORD` | Knowledge graph |
-| `GROQ_API_KEY` or `TOGETHER_API_KEY` | Claim extraction + arbitration |
-| `LLM_BASE_URL` | OpenAI-compatible base (`https://api.groq.com/openai/v1` or local vLLM) |
-| `LLM_MODEL_FAST` | Default 8B cascade tier (`llama-3.1-8b-instant`) |
-| `LLM_MODEL_DENSE` | Dense / legal-financial tier (`llama-3.3-70b-versatile`) |
-| `ENTROPY_THRESHOLD` | `H(R_q)` gate (default `0.55`) |
-| `CAMMR_LAMBDA` | Relevance vs diversity blend |
+
+| Variable                                      | Purpose                                                                 |
+| --------------------------------------------- | ----------------------------------------------------------------------- |
+| `EXA_API_KEY`                                 | Neural web search                                                       |
+| `NEO4J_URI` / `NEO4J_USER` / `NEO4J_PASSWORD` | Knowledge graph                                                         |
+| `GROQ_API_KEY` or `TOGETHER_API_KEY`          | Claim extraction + arbitration                                          |
+| `LLM_BASE_URL`                                | OpenAI-compatible base (`https://api.groq.com/openai/v1` or local vLLM) |
+| `LLM_MODEL_FAST`                              | Default 70B tier (`llama-3.3-70b-versatile`)                            |
+| `LLM_MODEL_DENSE`                             | Dense / legal-financial tier (`llama-3.3-70b-versatile`)                |
+| `ENTROPY_THRESHOLD`                           | `H(R_q)` gate (default `0.55`)                                          |
+| `CAMMR_LAMBDA`                                | Relevance vs diversity blend                                            |
+
 
 ## API
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Liveness |
-| `GET` | `/v1/architecture` | Live module map |
+
+| Method | Path                 | Description                                                              |
+| ------ | -------------------- | ------------------------------------------------------------------------ |
+| `GET`  | `/health`            | Liveness                                                                 |
+| `GET`  | `/v1/architecture`   | Live module map                                                          |
 | `POST` | `/v1/research/query` | Primary research pipeline (`ResearchQueryRequest` → `SynthesisResponse`) |
-| `POST` | `/v1/query` | Legacy full pipeline (`QueryRequest` → `QueryResponse`) |
+| `POST` | `/v1/query`          | Legacy full pipeline (`QueryRequest` → `QueryResponse`)                  |
+
 
 ### Research query example
 
@@ -114,7 +118,7 @@ app/
   models/schemas.py       # AtomicClaim, ResearchQueryRequest, SynthesisResponse, …
   services/
     ssm_retrieval.py      # Module 1 — BM25 + Matryoshka hybrid retrieval
-    extractor.py          # Module 2 — async 8B AtomicClaim extraction
+    extractor.py          # Module 2 — async 70B AtomicClaim extraction
     graph_service.py      # Module 3 — Neo4j async driver + Cypher
     cammr_engine.py       # Module 4 — CAMMR + H(R_q)
     arbitration.py        # Module 5 — deep conflict resolution
@@ -133,4 +137,4 @@ ruff check app
 pytest
 ```
 
-Python package metadata lives in [`pyproject.toml`](pyproject.toml); runtime pins in [`requirements.txt`](requirements.txt).
+Python package metadata lives in `[pyproject.toml](pyproject.toml)`; runtime pins in `[requirements.txt](requirements.txt)`.

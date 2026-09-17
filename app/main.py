@@ -159,7 +159,7 @@ def create_app() -> FastAPI:
         """
         End-to-end research orchestration:
 
-        Exa (top-5) → Llama-3.1-8B batch extract → Neo4j ingest / contradictions
+        Exa (top-5) → Llama-3.3-70B batch extract → Neo4j ingest / contradictions
         → H(R_q) → CAMMR re-rank → ``SynthesisResponse``.
         """
         return await _run_research_pipeline(body, request)
@@ -214,7 +214,7 @@ async def _run_research_pipeline(
     )
 
     # ------------------------------------------------------------------
-    # 2) Parallel 8B extraction — top docs only + query window + cache
+    # 2) Parallel 70B extraction — top docs only + query window + cache
     # ------------------------------------------------------------------
     t0 = time.perf_counter()
     atomic_claims: list[AtomicClaim] = []

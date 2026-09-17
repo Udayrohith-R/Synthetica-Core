@@ -210,7 +210,7 @@ def naive_llm_answer(query: str, chunks: list[ExaChunk]) -> tuple[str, float]:
     """Stuff Exa chunks into a single prompt — the classic confused-RAG path."""
     api_key = (os.getenv("GROQ_API_KEY") or os.getenv("TOGETHER_API_KEY") or "").strip()
     base = os.getenv("LLM_BASE_URL", "https://api.groq.com/openai/v1").rstrip("/")
-    model = os.getenv("LLM_MODEL_FAST", "llama-3.1-8b-instant")
+    model = os.getenv("LLM_MODEL_FAST", "llama-3.3-70b-versatile")
 
     if not api_key and "localhost" not in base and "127.0.0.1" not in base:
         return (
@@ -491,7 +491,7 @@ def print_latency_comparison(
         print(style(f"\n  {note}", C.BOLD))
         print(
             style(
-                "  Note: Synthetica latency includes Exa + 8B extraction + Neo4j + CAMMR "
+                "  Note: Synthetica latency includes Exa + 70B extraction + Neo4j + CAMMR "
                 "inside one request — compare apples-to-apples with baseline total.",
                 C.DIM,
             )

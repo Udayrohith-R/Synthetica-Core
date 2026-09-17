@@ -1,7 +1,7 @@
 """
 Module 2: Zero-Latency Fact Extractor.
 
-Async Llama-3.1-8B-Instruct extraction (Groq / Together / vLLM via httpx)
+Async Llama-3.3-70B extraction (Groq / Together / vLLM via httpx)
 that turns Exa search snippets into strict ``AtomicClaim`` objects.
 """
 
@@ -75,7 +75,7 @@ class ExtractionSnippet:
 
 class ClaimExtractor:
     """
-    Asynchronous Atomic Claim extractor backed by an 8B LLM.
+    Asynchronous Atomic Claim extractor backed by Llama-3.3-70B.
 
     Talks to any OpenAI-compatible Chat Completions endpoint (Groq, Together AI,
     or local vLLM) over ``httpx.AsyncClient``. Concurrent page batches use
@@ -130,7 +130,7 @@ class ClaimExtractor:
         source_domain:
             Publisher hostname (e.g. ``sec.gov``).
         tier:
-            Model cascade tier (``FAST`` = 8B, ``DENSE`` = 70B).
+            Model cascade tier (``FAST`` = 70B, ``DENSE`` = 70B).
         research_query:
             Optional focus query — biases extraction toward answering claims.
         use_cache:
@@ -311,7 +311,7 @@ class ClaimExtractor:
         max_docs: int | None = None,
     ) -> list[AtomicClaim]:
         """
-        Parallel claim extraction across documents (default: Llama-3.1-8B FAST tier).
+        Parallel claim extraction across documents (default: Llama-3.3-70B FAST tier).
 
         Latency knobs: ``max_docs`` caps pages extracted; ``research_query`` enables
         query-window truncation + focused prompting + extraction cache.

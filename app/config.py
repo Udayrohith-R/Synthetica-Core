@@ -31,13 +31,13 @@ class Settings(BaseSettings):
     groq_api_key: str = Field(default="", alias="GROQ_API_KEY")
     together_api_key: str = Field(default="", alias="TOGETHER_API_KEY")
 
-    # Module 2 — model cascade (fast 8B → dense 70B)
+    # Module 2 — model cascade (70B unified: fast + dense)
     llm_base_url: str = Field(
         default="https://api.groq.com/openai/v1",
         alias="LLM_BASE_URL",
     )
     llm_model_fast: str = Field(
-        default="llama-3.1-8b-instant",
+        default="llama-3.3-70b-versatile",
         alias="LLM_MODEL_FAST",
     )
     llm_model_dense: str = Field(
